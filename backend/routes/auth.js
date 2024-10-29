@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
+
 const User = require('../models/User');
 
 router.post('/signup',async(request,response)=>{
@@ -47,6 +48,25 @@ router.post('/login',async(request,response)=>{
   }catch(err){
     console.log(err);
     response.status(500).json({ message: 'An internal server error occurred.'});
+  }
+})
+
+router.get('/users',async(request,response)=>{
+  try{
+    const users = await User.find();
+    console.log(users);
+    response.status(200).json({message:'Users fetched successfully!',users});
+  }catch(err){
+     response.status(500).json({message:err});
+  }
+})
+
+router.delete('/:id',async(request,response)=>{
+  try{
+   await User.findByIdAndDelete(request.params.id);
+   return response.status(200).json({message:'User deleted successfully!'});
+  }catch(err){
+    response.status(500).json({message:err});
   }
 })
 
