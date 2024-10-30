@@ -7,6 +7,7 @@ import PageNotFound from '../components/common/PageNotFound';
 import BarsLayout from '../components/common/BarsLayout'; 
 import Dashboard from '../components/views/Dashboard';
 import Users from '../components/views/Users';
+import AdminOverview from '../components/views/AdminOverview';
 
 const AppRoutes = () => {
   return (
@@ -18,8 +19,9 @@ const AppRoutes = () => {
         <Route path='*' element={<PageNotFound />} />
           {/* <Route path='/layout' element={<BarsLayout />} /> */}
           <Route element={<BarsLayout />}>
-            <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/dashboard' element={<AdminOverview />} />
             <Route path='/users' element={<Users />} />
+            {/* <Route path='/admin-overview' element={<AdminOverview />} /> */}
           </Route>
         </Routes>
       </div>

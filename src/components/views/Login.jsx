@@ -1,14 +1,15 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState ,useEffect,useContext} from 'react';
 import { commonContainer, clearNotification } from '../globalFunctions/functions';
 import { Container, OutlinedInput, InputAdornment, IconButton, FormControl, InputLabel, Box, Button, Divider, Alert } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import {UserContext} from '../context/UserContext';
 
 
 const Login = () => {
 	const navigate = useNavigate();
+	const {setCurrentUser,login} = useContext(UserContext);
 	const [showPassword, setShowPassword] = useState(false);
 	const [formValues,setFormValues] = useState({email:'',password:''});
 	const [error, setError] = useState({ show: false, type: '', message: '' });
@@ -28,14 +29,12 @@ const Login = () => {
 		e.preventDefault();
 		try{
 			const response = await axios.post('/api/auth/login', formValues);
-			console.log(response);
 			setError({show:true,type:'success',message:response.data.message});
 			setFormValues({email:'',password:''});
+			setCurrentUser(response.data.user); 
+			login(response.data.user);
 			setTimeout(()=>{
-         navigate('/dashboard',{
-					state:{
-					userData:response.data.user
-				 }});
+         navigate('/dashboard');
 			},5000)
 		}catch(err){
       console.log(err);

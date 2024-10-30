@@ -51,6 +51,7 @@ router.post('/login',async(request,response)=>{
   }
 })
 
+//Get All Users
 router.get('/users',async(request,response)=>{
   try{
     const users = await User.find();
@@ -61,6 +62,38 @@ router.get('/users',async(request,response)=>{
   }
 })
 
+//Get particular user using Id(single user)
+router.get('/:id',async(request,response)=>{
+  try{
+    const selectedUser = await User.findById(request.params.id);
+    response.status(200).json({ message: 'User retrieved successfully', selectedUser })
+  }catch(err){
+    response.status(200).json({ message: err.message })
+  }
+})
+
+//Edit User
+router.put('/:id',async(request,response)=>{
+  const { username, email, password, role } = request.body;
+  try{
+    const user = await User.findById(request.params.id);
+    user.username = username || user.username; 
+    user.email = email || user.email; 
+    user.role = role || user.role; 
+    if (password) {
+      const salt = await bcrypt.genSalt(10); // Generate salt
+      user.password = await bcrypt.hash(password, salt); // Hash the new password
+    }
+    await user.save();
+    response.status(200).json({ message: 'User updated successfully!', user });
+  }catch(err){
+    console.error(err);
+    response.status(500).json({ message: 'Internal server error, please try again later.' });
+  }
+})
+
+
+//Delete User using Id
 router.delete('/:id',async(request,response)=>{
   try{
    await User.findByIdAndDelete(request.params.id);

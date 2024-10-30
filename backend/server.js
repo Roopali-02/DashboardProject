@@ -15,6 +15,8 @@ app.use(cors());
 app.use('/api/auth/', authRoutes);
 app.use('/api/', authRoutes);
 app.use('/api/delete-user/', authRoutes);
+app.use('/api/user/', authRoutes);
+app.use('/api/edit-user/', authRoutes);
 
 mongoose.connect(process.env.MONGO_URI).then(() => console.log('MongoDB Connected!')).catch((err) => console.log('MongoDB Connection error:', err));
 

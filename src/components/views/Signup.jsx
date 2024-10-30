@@ -6,7 +6,7 @@ import { useNavigate,useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { UserContext } from '../context/UserContext';
 
-const Signup = ({ handleClose }) => {
+const Signup = ({ handleClose,userData,addModal }) => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const {getAllUsers} = useContext(UserContext);
@@ -15,12 +15,22 @@ const Signup = ({ handleClose }) => {
 	const [formValues,setFormValues] = useState({username:'',email:'',password:'',role:''});
 	const [error,setError]= useState({show:false,type:'',message:''});
 	const [passwordError, setPasswordError] = useState('');
-
-	const handleClickShowPassword = () => setShowPassword((show) => !show);
+	useEffect(() => {
+        if (userData) {
+            setFormValues({
+                username: userData.username || '',
+                email: userData.email || '',
+                password: '', // Don't pre-fill password for security
+                role: userData.role || ''
+            });
+        }
+  }, [userData]);
 
 	useEffect(()=>{
 		clearNotification(error,setError);
 	},[error])
+
+	const handleClickShowPassword = () => setShowPassword((show) => !show);
 
 	const validatePassword = (password)=>{
 		const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
@@ -66,6 +76,30 @@ const Signup = ({ handleClose }) => {
 		}
 	}
 	}
+
+	const handleEdit = async (e) => {
+    e.preventDefault();
+    if (passwordError) {
+      return;
+    }
+    try {
+      await axios.put(`/api/edit-user/${userData._id}`, formValues);
+      setError({ show: true, type: 'success', message: 'User updated successfully!' });
+      setFormValues({ username: '', email: '', password: '', role: '' });
+      if (handleClose) {
+        setTimeout(() => {
+          handleClose();
+          getAllUsers();
+        }, 3000);
+      }
+    } catch (err) {
+      if (err.response) {
+        setError({ show: true, type: 'error', message: err.response.data.message });
+      }
+    }
+  };
+
+  const btnStyle={textTransform: 'none', background: '#000' };
 	return (
 		<Container maxWidth='xs' className='py-4 mt-16 bg-customBg'>
 			{
@@ -75,12 +109,18 @@ const Signup = ({ handleClose }) => {
 			  <Alert severity={error.type} className='mt-2 mb-4'>{error.message}</Alert>
 			}
 			{
-				!isSignupPage&&
+				addModal&&
 				 <Typography id="modal-modal-title" variant="h5" component="h2" className='py-3 text-center'>
              Add User
           </Typography>
 			}
-				<form onSubmit={handleSubmit}>
+			{
+				userData&&
+				 <Typography id="modal-modal-title" variant="h5" component="h2" className='py-3 text-center'>
+             Update User
+          </Typography>
+			}
+				<form onSubmit={userData ? handleEdit : handleSubmit}>
 				<FormControl
 				 size='small'
 				 sx={{ mb: 2 }}
@@ -138,7 +178,7 @@ const Signup = ({ handleClose }) => {
 							</IconButton>
 						</InputAdornment>
 					}
-						required
+						required={!userData}
 					/>
 					{passwordError && <FormHelperText>{passwordError}</FormHelperText>}
 					</FormControl>
@@ -162,13 +202,19 @@ const Signup = ({ handleClose }) => {
 					 </Select>
 					</FormControl>
 					 <Box className='flex flex-col gap-y-2'>
-						<Button type='submit' variant='contained' sx={{ textTransform: 'none', background: '#000' }} fullWidth>{isSignupPage?'Sign Up':'Add User'}</Button>
+						<Button type='submit' variant='contained' sx={btnStyle} fullWidth>
+						 {isSignupPage ? 'Sign Up' : userData ? 'Update User' : 'Add User'}
+						</Button>
 						{
 							isSignupPage&&
 							<>
 	          <Divider className='py-3 font-semibold'>Already have an account?</Divider>
-						<Button variant='contained' sx={{ textTransform: 'none', background: '#000' }} onClick={() => navigate('/login')} fullWidth> Login</Button>
+						<Button variant='contained' sx={btnStyle} onClick={() => navigate('/login')} fullWidth> Login</Button>
 							</>
+						}
+
+						{
+							addModal||userData?<Button variant='contained' type='primary' sx={{textTransform:'none',marginTop:'8px'}} onClick={handleClose}>Cancel</Button>:null
 						}
 					
 				</Box>

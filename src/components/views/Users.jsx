@@ -1,18 +1,22 @@
 import React,{useState,useEffect,useContext} from 'react';
-import { Paper, Box, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, IconButton, Chip, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button,Alert } from '@mui/material';
+import { Paper, Box, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, IconButton, Chip, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button, Alert, Modal } from '@mui/material';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import {Edit,Delete} from '@mui/icons-material';
 import { clearNotification } from '../globalFunctions/functions';
 import { UserContext } from '../context/UserContext';
+import Signup from '../views/Signup';
+
 const Users = () => {
 	const { users, getAllUsers } = useContext(UserContext);
 
+	const [openModal,setOpenModal] = useState(false);
 	const [open,setOpen] = useState(false);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
 	const [page, setPage] = useState(0);
 	const [userId,setUserId] = useState('');
 	const [error,setError] = useState({show:false,type:'',message:''});
+	const [userData,setUserData] = useState({});
 
 	useEffect(()=>{
 		getAllUsers();
@@ -50,6 +54,27 @@ const Users = () => {
 	}
 
 	const columns=['Id','UserName','Email','Role','Created On','Status','Actions'];
+
+	const handleModalClose = () => {
+		setOpenModal(false);
+		setUserData({});
+	}
+
+	const getSelectedUserInfo =async (id)=>{
+		try {
+			const response = await axios.get(`/api/user/${id}`);
+			console.log(response);
+			setUserData(response?.data?.selectedUser);
+		} catch (err) {
+			console.log(err);
+			setUserData({});
+		}
+	}
+
+	const handleOpenModal = (id)=>{
+		setOpenModal(true);
+		getSelectedUserInfo(id);
+	}
 	
 	return (
 		<Box className='text-black'>
@@ -80,7 +105,7 @@ const Users = () => {
 								 <TableCell><Chip size='small' label="Active" color="success" sx={{p:1}}/></TableCell>
 									<TableCell>
 										<Tooltip title='Edit'>
-											<IconButton color="primary">
+										<IconButton color="primary" onClick={() => handleOpenModal(user._id)}>
 												<Edit/>
 											</IconButton>
 										</Tooltip>
@@ -123,6 +148,16 @@ const Users = () => {
 							<Button onClick={() => deleteUser(userId)} autoFocus variant='contained' size='small'>Okay</Button>
 						</DialogActions>
 				</Dialog>
+			}
+			{
+				openModal&&
+				<Modal
+				 open={openModal}
+				 onClose={handleModalClose}
+				 aria-labelledby="modal-modal-title"
+				>
+					<Signup handleClose={handleModalClose} userData={userData} setUserData={setUserData}/>
+				</Modal>
 			}
 		</Box>
 	)

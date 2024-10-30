@@ -1,15 +1,32 @@
-import React,{useState} from 'react';
-import { Box, Container, List, ListItemButton, ListItemIcon, ListItemText, Collapse, IconButton, Badge, Modal } from '@mui/material';
-import { DashboardCustomize, Settings, VerifiedUser, PersonAdd, AccountBox, ArrowDropUp, ArrowDropDown, Logout, Email, Notifications } from '@mui/icons-material';
+import React,{useState,useContext,useEffect} from 'react';
+import { Box, Container, IconButton, Badge, Modal,Drawer,Avatar,useMediaQuery } from '@mui/material';
+import { DashboardCustomize, Settings, VerifiedUser, PersonAdd, AccountBox, Logout, Email, Notifications,AccountCircle ,Menu} from '@mui/icons-material';
 import Signup from '../views/Signup';
-import { Link, Outlet } from 'react-router-dom';
+import Sidebar from '../common/Sidebar';
+import { Outlet } from 'react-router-dom';
+import {UserContext} from '../context/UserContext';
+
 
 const BarsLayout = () => {
-const [open, setOpen] = useState(true);
-const [openModal,setOpenModal] = useState(false);
-const handleClick = () => {
-		setOpen(!open);
-	};
+	const smallSizeScreen = useMediaQuery('(max-width:500px)');
+	const {currentUser,setCurrentUser} = useContext(UserContext);
+	const [loading, setLoading] = useState(true); 
+	const [open, setOpen] = useState(true);
+	const [openModal,setOpenModal] = useState(false);
+	const [openDrawer, setOpenDrawer] = useState(false);
+	const [sidebarDrawer, setSidebarDrawer] = useState(false);
+	const addModal = true;
+
+	const handleClick = () => {
+			setOpen(!open);
+		};
+
+		useEffect(() => {
+    setTimeout(() => {
+      setLoading(false); 
+    }, 500); 
+  }, []);
+
 
 	const icons = [{ icon: <Email />, count: 4 }, { icon: <Notifications />, count: 6 }]
 	const sidebarOptions = [
@@ -17,12 +34,14 @@ const handleClick = () => {
 
 			title:'Overview',
 			icon:<DashboardCustomize/>,
-			url:'/dashboard'
+			url:'/dashboard',
+			toShow:'both',
 		},
 		 {
 
 			title:'User Management',
 			icon:<VerifiedUser/>,
+			toShow:'admin',
 			children:[
 				{
 					title:'View Users',
@@ -38,12 +57,19 @@ const handleClick = () => {
 		{
 			title:'Settings',
 			icon:<Settings/>,
-			url:'/settings'
+			url:'/settings',
+			toShow:'admin',
+		},
+		{
+			title:'My Profile',
+			icon:<AccountCircle/>,
+			toShow:'user',
 		},
 		{
 			title: 'LogOut',
 			icon: <Logout />,
-			url: '/logout'
+			url: '/login',
+			toShow:'both',
 		},
 	]
 
@@ -54,61 +80,88 @@ const handleClick = () => {
 		setOpenModal(false);
 	}
 
+	const clearUser = ()=>{
+    setCurrentUser(null);
+		localStorage.removeItem('currentUser');
+	}
+
+	 if (loading) {
+    return <div className='flex justify-center w-full min-h-screen items-center text-4xl font-bold'>Loading...</div>;
+  }
+
+	const toggleDrawer = (newOpen) => () => {
+    setOpenDrawer(newOpen);
+  };
+	const toggleSidebarDrawer = (newOpen) => () => {
+    setSidebarDrawer(newOpen);
+  };
+
+	const DrawerList = ()=>{
+		return(
+			<Box sx={{ width: 250 }}  role="presentation" className='flex items-center' onClick={toggleDrawer(false)}>
+          <Box className='flex flex-col justify-center items-center w-full mt-6'>
+            <Avatar sx={{ bgcolor: 'red' }}>{currentUser.role.slice(0,1)}</Avatar>
+						<Box className='mt-3 mb-1 font-semibold text-lg'>{currentUser.username}</Box>
+						<Box className='my-2 text-lg font-semibold'>{currentUser.email}</Box>
+					</Box>
+			</Box>
+		)
+	}
+
+	const sidebarContent = ()=>{
+		return(
+			<Box role="presentation" className='w-full' onClick={toggleSidebarDrawer(false)}>
+				<Sidebar 
+					  sidebarOptions={sidebarOptions} 
+						handleClick={handleClick} 
+						clearUser={clearUser} 
+						toggleDrawer={toggleDrawer}
+            currentUser={currentUser}
+						open={open}
+						handleOpen={handleOpen}
+						responsiveBar={true}
+					/>
+       </Box>
+		)
+	}
+
 	return (
 		<div>
 		 <Box className="w-full bg-customBg shadow-lg">
-			 <Container maxWidth='lg' className='h-20 navbarBg flex justify-between items-center sticky top-0 shadow-lg'>
-				 <Box className='text-2xl font-semibold font-serif underline'>Dashboard</Box>
+			 <Container maxWidth='lg' className='h-20 navbarBg flex justify-between items-center sticky top-0 shadow-lg z-10'>
+				 <Box className='text-2xl font-semibold font-serif underline'>
+         {
+					smallSizeScreen&& <Menu sx={{color:'#1976d2',fontSize:'32px'}} onClick={toggleSidebarDrawer(true)} className='mr-3'/>
+				 }
+				 Dashboard</Box>
 					<Box>
-							{
-								icons.map((item)=>(
-									<IconButton size="large" color="primary" key={item.icon}>
-										<Badge badgeContent={item.count} color="error">
-										{item.icon}
-										</Badge>
-									</IconButton>
-								))
-							}
+						{
+							icons.map((item)=>(
+								<IconButton size="large" color="primary" key={item.icon}>
+									<Badge badgeContent={item.count} color="error">
+									{item.icon}
+									</Badge>
+								</IconButton>
+							))
+						}
 					</Box>
 			 </Container>
-				<Container maxWidth='lg' className='bg-slate-50 text-white flex'>
-				 <Box className='sidebarBg w-[260px] p-2' sx={{ minHeight: 'calc(100vh - 80px)' }} >
-					<List
-						component="nav"
-					>
-           {
-								sidebarOptions.map((option,index)=>(
-									<Box key={index}>
-									 <ListItemButton onClick={index === 1 ? handleClick : null} component={Link} to={option.url}>
-										<ListItemIcon sx={{color:'#fff',minWidth:'40px !important'}}>{option.icon}</ListItemIcon>
-											<ListItemText primary={option.title} className='sidebarTitle'/>
-										{
-												open && index === 1 ? <ArrowDropUp />:null
-										}
-										{
-												!open && index === 1 ? <ArrowDropDown /> : null
-										}
-									</ListItemButton>
-									{
-										index===1&&
-											<Collapse in={open} timeout="auto" unmountOnExit>
-													<List component="div" disablePadding>
-														{
-															option.children.map((nestedOp,index)=>(
-																<ListItemButton sx={{ pl: 4 }} component={Link} to={nestedOp.url} onClick={index === 1 ? handleOpen :null}>
-																	<ListItemIcon sx={{ color: '#fff', minWidth: '40px !important' }}>{nestedOp.icon}</ListItemIcon>
-																	<ListItemText primary={nestedOp.title} className='sidebarTitle' />
-																</ListItemButton>
-															))
-														}
-													</List>
-											</Collapse>
-									}
-									</Box>
-								))
-					 }
-					</List>
-				 </Box>
+				<Container maxWidth='lg' className='bg-slate-50 text-white flex z-0'>
+
+				  {
+						!smallSizeScreen&& 
+						<Sidebar 
+					  sidebarOptions={sidebarOptions} 
+						handleClick={handleClick} 
+						clearUser={clearUser} 
+						toggleDrawer={toggleDrawer}
+            currentUser={currentUser}
+						open={open}
+						handleOpen={handleOpen}
+						responsiveBar={false}
+					/>
+					}
+				 
 					<Box className='grow overViewBg p-2'>
 						<Outlet/>
 				 </Box>
@@ -119,10 +172,16 @@ const handleClick = () => {
 							onClose={handleClose}
 							aria-labelledby="modal-modal-title"
 						>
-							<Signup handleClose={handleClose} />
+							<Signup handleClose={handleClose} addModal={addModal}/>
 						</Modal>
 				 }
-			 </Container>
+				 <Drawer open={openDrawer} onClose={toggleDrawer(false)}>
+					{DrawerList()}
+				 </Drawer>
+				  <Drawer open={sidebarDrawer} onClose={toggleSidebarDrawer(false)}>
+				    {sidebarContent()}
+				 </Drawer>
+			  </Container>
 		 </Box>
 		</div>
 	)
