@@ -32,12 +32,12 @@ const Login = () => {
 			setError({show:true,type:'success',message:response.data.message});
 			setFormValues({email:'',password:''});
 			setCurrentUser(response.data.user); 
+			localStorage.setItem('token', response.data.token);
 			login(response.data.user);
 			setTimeout(()=>{
          navigate('/dashboard');
-			},5000)
+			},4000)
 		}catch(err){
-      console.log(err);
 			if (err.response) {
 				const errorMessage = err.response.data.message || 'An unexpected error occurred. Please try again.';
 				setError({ show: true, type: 'error', message: errorMessage });

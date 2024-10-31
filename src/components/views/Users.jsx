@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useContext} from 'react';
-import { Paper, Box, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, IconButton, Chip, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button, Alert, Modal } from '@mui/material';
+import { Paper, Box, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, IconButton, Chip, Tooltip, Dialog, DialogTitle, DialogContent, DialogActions, DialogContentText, Button, Alert, Modal, Container,useMediaQuery } from '@mui/material';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import {Edit,Delete} from '@mui/icons-material';
@@ -9,7 +9,7 @@ import Signup from '../views/Signup';
 
 const Users = () => {
 	const { users, getAllUsers } = useContext(UserContext);
-
+  const smallScreen = useMediaQuery('(max-width:500px)');
 	const [openModal,setOpenModal] = useState(false);
 	const [open,setOpen] = useState(false);
 	const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -83,12 +83,13 @@ const Users = () => {
 				error.show&&<Alert variant="filled" severity={error.type} className='my-2'>{error.message}</Alert>
 			}
 			<TableContainer component={Paper}>
+				<Box>
 			 <Table aria-label="users table" size="small">
 					<TableHead className='paginationBg'>
 					 <TableRow>
 					 {
 							columns.map((columnHeader,index)=>(
-								<TableCell key={index}>{columnHeader}</TableCell>
+								<TableCell key={columnHeader}>{columnHeader}</TableCell>
 							))
 					 }
 					 </TableRow>
@@ -120,6 +121,7 @@ const Users = () => {
 					}
 				 </TableBody>
 			 </Table>
+					</Box>
 			</TableContainer>
 			<TablePagination
 				component="div"

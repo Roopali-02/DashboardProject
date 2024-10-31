@@ -158,7 +158,7 @@ const AdminOverview = () => {
 			 <Grid container spacing={2} className=''>
 			 {
 				cardData.map((data,index)=>(
-					<Grid size={{xs:12,sm:6,md:6}} key={index}>
+					<Grid size={{xs:12,sm:6,md:6}} key={data.title}>
 						<Card className='flex shadow-sm'>
 							<Box className='w-3/4 flex flex-col justify-center items-center p-4'>
 								<Box className='text-xl font-semibold mb-2 text-neutral-500 font-sans'>{data.title}</Box>
@@ -170,15 +170,14 @@ const AdminOverview = () => {
 				))
 			 }
 			 </Grid>
-			 
 			<Box className='font-semibold text-3xl text-black my-5'>User Statistics Overview</Box>
 			<Paper elevation={2} className='p-3'>
 			  <Grid container spacing={2}>
 				{
 						chartData.map((chart,index)=>(
-							<Grid size={{ xs: 12, sm: 12, md: 6 }} key={index}>
+							<Grid size={{ xs: 12, sm: 12, md: 6 }} key={chart.title}>
 								<Box>
-									<span sx={{ fontSize: '13px' }} className='font-medium mb-2'>{chart.title}</span>
+									<span sx={{fontSize:'13px' }} className='font-medium mb-2'>{chart.title}</span>
 								</Box>
 								<Box className={`${index === 1?'h-[260px]':null} w-full flex justify-center items-center`}>
 								 {chart.type}

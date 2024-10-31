@@ -1,5 +1,5 @@
 import React,{useState,useContext,useEffect} from 'react';
-import { Box, Container, IconButton, Badge, Modal,Drawer,Avatar,useMediaQuery } from '@mui/material';
+import { Box, Container, IconButton, Badge, Modal,Drawer,Avatar,useMediaQuery,Tooltip } from '@mui/material';
 import { DashboardCustomize, Settings, VerifiedUser, PersonAdd, AccountBox, Logout, Email, Notifications,AccountCircle ,Menu} from '@mui/icons-material';
 import Signup from '../views/Signup';
 import Sidebar from '../common/Sidebar';
@@ -28,7 +28,7 @@ const BarsLayout = () => {
   }, []);
 
 
-	const icons = [{ icon: <Email />, count: 4 }, { icon: <Notifications />, count: 6 }]
+	const icons = [{ icon: <Email />, count: 4,message:'You have 4 unread emails.' }, { icon: <Notifications />, count: 6,message:'You have 6 unread notifications.' }]
 	const sidebarOptions = [
 		{
 
@@ -99,10 +99,10 @@ const BarsLayout = () => {
 	const DrawerList = ()=>{
 		return(
 			<Box sx={{ width: 250 }}  role="presentation" className='flex items-center' onClick={toggleDrawer(false)}>
-          <Box className='flex flex-col justify-center items-center w-full mt-6'>
-            <Avatar sx={{ bgcolor: 'red' }}>{currentUser.role.slice(0,1)}</Avatar>
-						<Box className='mt-3 mb-1 font-semibold text-lg'>{currentUser.username}</Box>
-						<Box className='my-2 text-lg font-semibold'>{currentUser.email}</Box>
+          <Box className='flex flex-col justify-start items-center w-full min-h-screen pt-12 profileDrawerBg'>
+            <Avatar sx={{ bgcolor: '#008080' }}>{currentUser.role.slice(0,1)}</Avatar>
+						<Box className='mt-3 mb-1 font-semibold text-lg font-sans'>{currentUser.username}</Box>
+						<Box className='my-2 text-lg font-semibold font-sans'>{currentUser.email}</Box>
 					</Box>
 			</Box>
 		)
@@ -110,11 +110,12 @@ const BarsLayout = () => {
 
 	const sidebarContent = ()=>{
 		return(
-			<Box role="presentation" className='w-full' onClick={toggleSidebarDrawer(false)}>
+			<Box role="presentation" className='w-full'>
 				<Sidebar 
 					  sidebarOptions={sidebarOptions} 
 						handleClick={handleClick} 
 						clearUser={clearUser} 
+						toggleSidebarDrawer={toggleSidebarDrawer}
 						toggleDrawer={toggleDrawer}
             currentUser={currentUser}
 						open={open}
@@ -126,28 +127,28 @@ const BarsLayout = () => {
 	}
 
 	return (
-		<div>
-		 <Box className="w-full bg-customBg shadow-lg">
-			 <Container maxWidth='lg' className='h-20 navbarBg flex justify-between items-center sticky top-0 shadow-lg z-10'>
-				 <Box className='text-2xl font-semibold font-serif underline'>
+		 <>
+			 <Container className='bg-customBg h-20 navbarBg flex justify-between items-center sticky top-0 shadow-lg z-10'>
+				 <Box className='text-2xl font-semibold font-serif'>
          {
-					smallSizeScreen&& <Menu sx={{color:'#1976d2',fontSize:'32px'}} onClick={toggleSidebarDrawer(true)} className='mr-3'/>
+					smallSizeScreen&& <Menu sx={{color:'#6495ED',fontSize:'32px'}} onClick={toggleSidebarDrawer(true)} className='mr-3'/>
 				 }
 				 Dashboard</Box>
 					<Box>
 						{
 							icons.map((item)=>(
+								<Tooltip title={item.message} key={item.count}>
 								<IconButton size="large" color="primary" key={item.icon}>
 									<Badge badgeContent={item.count} color="error">
 									{item.icon}
 									</Badge>
 								</IconButton>
+								</Tooltip>
 							))
 						}
 					</Box>
 			 </Container>
 				<Container maxWidth='lg' className='bg-slate-50 text-white flex z-0'>
-
 				  {
 						!smallSizeScreen&& 
 						<Sidebar 
@@ -161,8 +162,7 @@ const BarsLayout = () => {
 						responsiveBar={false}
 					/>
 					}
-				 
-					<Box className='grow overViewBg p-2'>
+					<Box className={`grow overViewBg p-2 ${smallSizeScreen?'overflow-x-scroll':''}`}>
 						<Outlet/>
 				 </Box>
 				 {
@@ -178,12 +178,12 @@ const BarsLayout = () => {
 				 <Drawer open={openDrawer} onClose={toggleDrawer(false)}>
 					{DrawerList()}
 				 </Drawer>
-				  <Drawer open={sidebarDrawer} onClose={toggleSidebarDrawer(false)}>
+				  <Drawer open={sidebarDrawer}>
 				    {sidebarContent()}
 				 </Drawer>
 			  </Container>
-		 </Box>
-		</div>
+		 </>
+		
 	)
 }
 
