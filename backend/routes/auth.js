@@ -42,11 +42,10 @@ router.post('/login',async(request,response)=>{
       role:user.role
     }
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET,{expiresIn:'7d'});
+    const token = jwt.sign(payload, process.env.JWT_SECRET,{expiresIn:'17d'});
     response.status(200).json({token,message:'Login successful! You will be redirected to your dashboard.',user:payload});
  
   }catch(err){
-    console.log(err);
     response.status(500).json({ message: 'An internal server error occurred.'});
   }
 })
@@ -55,7 +54,6 @@ router.post('/login',async(request,response)=>{
 router.get('/users',async(request,response)=>{
   try{
     const users = await User.find();
-    console.log(users);
     response.status(200).json({message:'Users fetched successfully!',users});
   }catch(err){
      response.status(500).json({message:err});
@@ -87,7 +85,6 @@ router.put('/:id',async(request,response)=>{
     await user.save();
     response.status(200).json({ message: 'User updated successfully!', user });
   }catch(err){
-    console.error(err);
     response.status(500).json({ message: 'Internal server error, please try again later.' });
   }
 })

@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import { Line, Pie } from "react-chartjs-2";
 import {
 	Chart as ChartJS,
-	CategoryScale, // Register the "category" scale
+	CategoryScale,
 	LinearScale,
 	PointElement,
 	LineElement,
@@ -174,16 +174,16 @@ const AdminOverview = () => {
 			<Paper elevation={2} className='p-3'>
 			  <Grid container spacing={2}>
 				{
-						chartData.map((chart,index)=>(
-							<Grid size={{ xs: 12, sm: 12, md: 6 }} key={chart.title}>
-								<Box>
-									<span sx={{fontSize:'13px' }} className='font-medium mb-2'>{chart.title}</span>
-								</Box>
-								<Box className={`${index === 1?'h-[260px]':null} w-full flex justify-center items-center`}>
-								 {chart.type}
-								</Box>
-							</Grid>
-						))
+					chartData.map((chart,index)=>(
+						<Grid size={{ xs: 12, sm: 12, md: 6 }} key={chart.title}>
+							<Box>
+								<span sx={{fontSize:'13px' }} className='font-medium mb-2'>{chart.title}</span>
+							</Box>
+							<Box className={`${index === 1?'h-[260px]':null} w-full flex justify-center items-center`}>
+								{chart.type}
+							</Box>
+						</Grid>
+					))
 				}
 				</Grid>
 			</Paper>

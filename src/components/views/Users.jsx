@@ -46,9 +46,7 @@ const Users = () => {
 			setOpen(false);
 			getAllUsers();
 			setError({show:true,type:'success',message:response.data.message});
-			console.log(response);
 			}catch(err){
-				console.log(err);
 				setError({ show: true, type: 'error', message: err.response?.data?.message || 'Something went wrong' });
 			}
 	}
@@ -63,10 +61,8 @@ const Users = () => {
 	const getSelectedUserInfo =async (id)=>{
 		try {
 			const response = await axios.get(`/api/user/${id}`);
-			console.log(response);
 			setUserData(response?.data?.selectedUser);
 		} catch (err) {
-			console.log(err);
 			setUserData({});
 		}
 	}

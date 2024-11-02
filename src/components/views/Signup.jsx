@@ -20,7 +20,7 @@ const Signup = ({ handleClose,userData,addModal }) => {
             setFormValues({
                 username: userData.username || '',
                 email: userData.email || '',
-                password: '', // Don't pre-fill password for security
+                password: '',
                 role: userData.role || ''
             });
         }
@@ -101,7 +101,7 @@ const Signup = ({ handleClose,userData,addModal }) => {
 
   const btnStyle={textTransform: 'none', background: '#000' };
 	return (
-		<Container maxWidth='xs' className='py-4 mt-16 bg-customBg'>
+		<Container maxWidth='xs' className='py-4 mt-16 bg-customBg mx-4'>
 			{
 				isSignupPage&&commonContainer('signup')
 			}

@@ -1,9 +1,11 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import { Box, List, ListItemButton, ListItemIcon, ListItemText, Collapse } from '@mui/material';
 import { ArrowDropUp, ArrowDropDown,Close } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import {UserContext} from '../context/UserContext';
 
-const Sidebar = ({ sidebarOptions, handleClick, clearUser, toggleDrawer, currentUser,open, handleOpen,responsiveBar,toggleSidebarDrawer }) => {
+const Sidebar = ({ sidebarOptions, handleClick, toggleDrawer,open, handleOpen,responsiveBar,toggleSidebarDrawer }) => {
+	const { logout,currentUser } = useContext(UserContext);
 	return (
 		<Box className='sidebarBg w-[260px] p-2' sx={{ minHeight: responsiveBar?'100vh':'calc(100vh - 80px)'}}>
 		  {
@@ -14,7 +16,7 @@ const Sidebar = ({ sidebarOptions, handleClick, clearUser, toggleDrawer, current
 						sidebarOptions.map((option, index) => (
 							<Box key={option.title}>
 								<ListItemButton
-									onClick={index === 1 ? handleClick : option.title === 'LogOut' ? clearUser : option.title === 'My Profile' ? toggleDrawer(true) : null}
+									onClick={index === 1 ? handleClick : option.title === 'LogOut' ? logout : option.title === 'My Profile' ? toggleDrawer(true) : null}
 									component={Link}
 									to={option.url}
 									style={{color:'#fff', display: option.toShow === 'both' ? '' : (option.toShow === 'admin' && currentUser?.role === 'User') || (option.toShow === 'user' && currentUser?.role === 'Admin') ? 'none' : '' }}

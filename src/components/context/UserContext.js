@@ -17,17 +17,21 @@ export const UserProvider =({children}) =>{
     setCurrentUser(user);
     localStorage.setItem('currentUser', JSON.stringify(user));
   };
+  const logout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem('currentUser'); 
+    localStorage.removeItem('token');
+  };
   const getAllUsers = async () => {
     try {
       const response = await axios.get('/api/users');
       setUsers(response?.data?.users);
-      console.log(response);
     } catch (err) {
-      console.log(err);
+      setUsers([]);
     }
   }
    return(
-     <UserContext.Provider value={{ users, setUsers, getAllUsers, currentUser, setCurrentUser, login }}>
+     <UserContext.Provider value={{ users, setUsers, getAllUsers, currentUser, setCurrentUser, login, logout }}>
        {children}
      </UserContext.Provider>
    )

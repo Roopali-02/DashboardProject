@@ -9,7 +9,7 @@ import {UserContext} from '../context/UserContext';
 
 const BarsLayout = () => {
 	const smallSizeScreen = useMediaQuery('(max-width:500px)');
-	const {currentUser,setCurrentUser} = useContext(UserContext);
+	const {currentUser} = useContext(UserContext);
 	const [loading, setLoading] = useState(true); 
 	const [open, setOpen] = useState(true);
 	const [openModal,setOpenModal] = useState(false);
@@ -57,7 +57,6 @@ const BarsLayout = () => {
 		{
 			title:'Settings',
 			icon:<Settings/>,
-			url:'/settings',
 			toShow:'admin',
 		},
 		{
@@ -78,11 +77,6 @@ const BarsLayout = () => {
 	}
 	const handleClose = () => {
 		setOpenModal(false);
-	}
-
-	const clearUser = ()=>{
-    setCurrentUser(null);
-		localStorage.removeItem('currentUser');
 	}
 
 	 if (loading) {
@@ -114,10 +108,8 @@ const BarsLayout = () => {
 				<Sidebar 
 					  sidebarOptions={sidebarOptions} 
 						handleClick={handleClick} 
-						clearUser={clearUser} 
 						toggleSidebarDrawer={toggleSidebarDrawer}
 						toggleDrawer={toggleDrawer}
-            currentUser={currentUser}
 						open={open}
 						handleOpen={handleOpen}
 						responsiveBar={true}
@@ -154,9 +146,7 @@ const BarsLayout = () => {
 						<Sidebar 
 					  sidebarOptions={sidebarOptions} 
 						handleClick={handleClick} 
-						clearUser={clearUser} 
 						toggleDrawer={toggleDrawer}
-            currentUser={currentUser}
 						open={open}
 						handleOpen={handleOpen}
 						responsiveBar={false}

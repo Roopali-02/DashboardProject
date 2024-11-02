@@ -10,19 +10,19 @@ import Users from '../components/views/Users';
 import AdminOverview from '../components/views/AdminOverview';
 
 const AppRoutes = () => {
-  return (
-    <UserProvider>
-        <Routes>
-        <Route path='/' element={<Signup/>}/>
-        <Route path='/login' element={<Login />} />
-        <Route path='*' element={<PageNotFound />} />
-          <Route element={<BarsLayout />}>
-          <Route path='/dashboard' element={<ProtectedRoute><AdminOverview /></ProtectedRoute>} />
-          <Route path='/users' element={<Users />} />
-          </Route>
-        </Routes>
-    </UserProvider>
-  )
+	return (
+		<UserProvider>
+			<Routes>
+			<Route path='/' element={<Signup/>}/>
+			<Route path='/login' element={<Login />} />
+			<Route path='*' element={<PageNotFound />} />
+				<Route element={<BarsLayout />}>
+				<Route path='/dashboard' element={<ProtectedRoute><AdminOverview /></ProtectedRoute>} />
+				<Route path='/users' element={<Users />} />
+				</Route>
+			</Routes>
+		</UserProvider>
+	)
 }
 
 export default AppRoutes
