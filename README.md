@@ -1,3 +1,78 @@
+# Project Title
+Dashboard with role based access control
+
+## Description
+This project is a web application that provides a dynamic and secure dashboard with role-based access control (RBAC) features. The dashboard allows administrators to manage user roles.
+
+## Installation
+To install the project, follow these steps:
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/Roopali-02/DashboardProject.git
+    ```
+
+2. Navigate to the backend directory:
+    ```bash
+    cd DashboardProject/backend
+    ```
+
+3. Install the backend dependencies:
+    ```bash
+    npm install
+    ```
+
+4. Start the backend server:
+    ```bash
+    npm run dev
+    ```
+
+5. Open a new terminal window, and navigate back to the project root directory:
+    ```bash
+    cd ..
+    ```
+
+6. Install the frontend dependencies:
+    ```bash
+    npm install
+    ```
+
+7. Start the frontend application:
+    ```bash
+    npm start
+    ```
+## Environment Variables
+This project requires the following environment variables to be set in the backend:
+
+- **MONGO_URI**: The connection string for your MongoDB database.
+- **JWT_SECRET**: A secret key used for signing and verifying JSON Web Tokens (JWT) for authentication.
+
+To set up these variables:
+
+1. Create a `.env` file in the `backend` directory with the following format:
+
+    ```plaintext
+    MONGO_URI="your_mongodb_connection_string_here"
+    JWT_SECRET="your_generated_secret_key_here"
+    ```
+
+    Replace `your_mongodb_connection_string_here` with your actual MongoDB URI.
+
+2. To generate a secure `JWT_SECRET` key, you can run this command in your terminal:
+    ```bash
+    node -e "console.log(require('crypto').randomBytes(64).toString('hex'));"
+    ```
+
+   Copy the generated key and paste it into your `.env` file as the value for `JWT_SECRET`.
+
+### .gitignore for the .env File
+Ensure that your `.env` file (where sensitive environment variables are stored) is listed in your `.gitignore` file to prevent it from being pushed to your Git repository:
+
+```plaintext
+# .gitignore
+.env
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

@@ -94,9 +94,9 @@ const BarsLayout = () => {
 		return(
 			<Box sx={{ width: 250 }}  role="presentation" className='flex items-center' onClick={toggleDrawer(false)}>
           <Box className='flex flex-col justify-start items-center w-full min-h-screen pt-12 profileDrawerBg'>
-            <Avatar sx={{ bgcolor: '#008080' }}>{currentUser.role.slice(0,1)}</Avatar>
-						<Box className='mt-3 mb-1 font-semibold text-lg font-sans'>{currentUser.username}</Box>
-						<Box className='my-2 text-lg font-semibold font-sans'>{currentUser.email}</Box>
+            <Avatar sx={{ bgcolor: '#008080' }}>{currentUser?.role.slice(0,1)}</Avatar>
+						<Box className='mt-3 mb-1 font-semibold text-lg font-sans'>{currentUser?.username}</Box>
+						<Box className='my-2 text-lg font-semibold font-sans'>{currentUser?.email}</Box>
 					</Box>
 			</Box>
 		)

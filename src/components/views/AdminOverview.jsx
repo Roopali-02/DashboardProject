@@ -154,7 +154,7 @@ const AdminOverview = () => {
  
 	return (
 		<Container>
-			 <Box className='font-semibold text-3xl text-black my-5'>User Overview</Box>
+			 <Box className='font-semibold text-3xl text-black my-5'>Overview</Box>
 			 <Grid container spacing={2} className=''>
 			 {
 				cardData.map((data,index)=>(
